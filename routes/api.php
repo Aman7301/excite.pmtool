@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::post('Get/LeaveType',[LeaveController::class,'GetLeaveType']);
       Route::get('Get/Leave/{id}',[LeaveController::class,'GetLeaveByEmp']);
       Route::delete('delete/Leave/{id}',[LeaveController::class,'deleteLeave']);
+      Route::put('Edit/Leave',[LeaveController::class,'updateLeave']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

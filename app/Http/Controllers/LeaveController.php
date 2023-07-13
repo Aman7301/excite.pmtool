@@ -42,5 +42,14 @@ class LeaveController extends Controller
         ['status' => 204, 'Message' => 'Leave Not Deleted'];
         return response()->json($response, 200);
     }
+    
+    public function updateLeave(Request $req)
+    {
+        $upd = LeaveModel::find($req->id);
+        $upd->update($req->all());
+        $response = ($upd) ? ['status' => 200, 'Mesaage' => 'Leave updated Successfully'] :
+            ['status' => 204, 'Message' => 'Leave Not Updated'];
+        return response()->json($response, 200);
+    }
 }
  
