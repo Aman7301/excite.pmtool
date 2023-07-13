@@ -6,7 +6,6 @@ use App\Http\Controllers\TimeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Events\NewYearStarted;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,12 +24,12 @@ Route::post('/auth/login', [AuthController::class, 'loginUser']);
 
 Route::middleware('auth:sanctum')->group(function () {
     
-    Route::get('/All', [EmployeeController::class, 'AllEmployee']);
-
+    
     //Employee
     Route::prefix('employee')->group(function () {
         Route::put('/update', [EmployeeController::class, 'UpdateEmployee']);
         Route::get('/{id}', [EmployeeController::class, 'GetEmployee']);
+        Route::get('/All', [EmployeeController::class, 'AllEmployee']);
 
         //Employee Academy detail
         Route::post('academy/register', [EmployeeController::class, 'CreateAcademy']);
