@@ -5,20 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LeaveModel extends Model
+class TotalLeaveModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'emp_leave';
+    protected $table = 'emp_total_leave';
     protected $primarykey = 'id';
 
     protected $fillable = [
         'id',
-        'emp_id',
-        'start_date',
-        'end_date',
-        'leave_type',
-        'reason',
-        'status'
+        'total'
     ];
 }

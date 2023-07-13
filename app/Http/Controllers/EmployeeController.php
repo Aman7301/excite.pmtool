@@ -184,4 +184,24 @@ class EmployeeController extends Controller
         ['status' => 404, 'Message' => 'Data Not Found'];
         return response()->json($response, 200);
     }
-} 
+
+    public function AllEmployee(Request $req)
+    {
+        // $employee = EmployeeModel::where("user_type",2)->get();
+        // return $employee;
+        // die();
+        // $data = array();
+        // $i = 0;
+        // foreach($employee as $emp){
+        //  $data[$i]['name'] = trim($emp['first_name']) . ' '. trim($emp['last_name']);
+        // $data[$i]['role'] = $emp['skillset'];
+        // $project = ProjectModel::where("emp_id",$emp['id'])->get();
+        // $data[$i]['project'] = $project['project_name'];
+        // $data[$i]['email'] = $emp['official_email'];
+        //  $i++;
+        // }
+        // $response = ($data) ? ['status' => 200, 'Message' => 'All Employees', 'data' => $data] :
+        // ['status' => 404, 'Message' => 'Data Not Found'];
+        // return response()->json($response, 200);
+    }
+}  

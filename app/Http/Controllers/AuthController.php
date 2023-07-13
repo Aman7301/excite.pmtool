@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\EmployeeModel;
+use App\Models\TotalLeaveModel;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -13,9 +14,27 @@ class AuthController extends Controller
         $emp = $req->all();
         if ($emp['user_type'] == 2) {
             $emp['profile_photo'] = $req->profile_photo->store('profile_photo');
+            //   $emp['emp_leave'] = 
         }
         $emp['password'] = Hash::make($req->password);
+       
         $data = EmployeeModel::create($emp);
+        $employee = EmployeeModel::where("id",$data['id'])->get();
+        
+        foreach($employee as $empl){
+        $total = TotalLeaveModel::where("id",$empl['total_leave_id'])->first();
+        $leave = $total['total'];
+        $val = $leave / 12 ;
+        $mon = 13 - date('m');
+        $mul = $val * $mon;
+    }
+    EmployeeModel::where("id",$data['id'])->update([
+        "emp_leave" => $mul
+    ]);
+       // $num = 18;
+        // $val = $num/12;
+        // echo $val;
+        // die;
         if ($data) {
             $response = ['status' => 200, 'Message' => 'Data Successfully Added'];
         } else {

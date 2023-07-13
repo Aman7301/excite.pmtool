@@ -6,6 +6,7 @@ use App\Http\Controllers\TimeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Events\NewYearStarted;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,8 @@ Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    
+    Route::get('/All', [EmployeeController::class, 'AllEmployee']);
 
     //Employee
     Route::prefix('employee')->group(function () {
@@ -64,6 +67,10 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::get('Get/Leave/{id}',[LeaveController::class,'GetLeaveByEmp']);
       Route::delete('delete/Leave/{id}',[LeaveController::class,'deleteLeave']);
       Route::put('Edit/Leave',[LeaveController::class,'updateLeave']);
+
+      //Total Leave Changes
+    //   Route::post('')
+
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

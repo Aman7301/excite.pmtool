@@ -17,21 +17,21 @@ class EmployeeModel extends Authenticatable
     protected $primarykey = 'id';
     protected $fillable = [
         'id',
-       'user_type',
-       'first_name',
-       'middle_name',
-       'last_name',
-       'gender',
-       'date_of_birth',
-       'age',
-       'martial_status',
-       'current_address',
-       'permanent_address',
-       'number',
-       'emergency_number',
-       'blood_group',
-       'Bank',
-       'Account_number',
+        'user_type',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'gender',
+        'date_of_birth',
+        'age',
+        'martial_status',
+        'current_address',
+        'permanent_address',
+        'number',
+        'emergency_number',
+        'blood_group',
+        'Bank',
+        'Account_number',
         'IFSC',
         'Branch_name',
         'Branch_city',
@@ -49,6 +49,8 @@ class EmployeeModel extends Authenticatable
         'Reporting_manager',
         'profile_photo',
         'practice',
+        'total_leave_id',
+        'emp_leave',
         'status',
     ];
 
@@ -66,5 +68,9 @@ class EmployeeModel extends Authenticatable
      *
      * @var array<string, string>
      */
-    
+    public function totalLeave()
+{
+    return $this->belongsTo(TotalLeaveModel::class, 'total_leave_id');
+}
+
 }
