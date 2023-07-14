@@ -33,6 +33,16 @@ class LeaveController extends Controller
     public function GetLeaveByEmp($id)
     {
         $leave = LeaveModel::where('emp_id', $id)->get();
+        $data = array();
+        $i = 0;
+        foreach($leave as $l){
+            $data[$i] = $l;
+            $emp = EmployeeModel::where("id",$l['emp_id'])->first();
+            $data[$i]['Total_Leave']  =  $emp['emp_total_leave'];
+            $data[$i]['Leave_balance']  =  $emp['emp_leave'];
+            $data[$i]['Leave_Taken']  =  $emp['emp_total_leave'] - $emp['emp_leave'];
+            $i++;
+        }
         $response = ($leave) ? ['status' => 200, 'Message' => 'Leave By Emp', 'data' => $leave] :
             ['status' => 404, 'Message' => 'Leave Not Found By this Id'];
         return response()->json($response, 200);
@@ -75,12 +85,4 @@ class LeaveController extends Controller
         return response()->json($response, 200);
     }
 
-    public function handleNewYear()
-    {
-        // Your code for handling the new year event
-        
-        event(new NewYearStarted());
-        
-        // Other code for the new year event
-    }
 }

@@ -164,44 +164,48 @@ class EmployeeController extends Controller
 
     public function GetEmployee(Request $req, $id)
     {
-          $employee = EmployeeModel::where('id',$id)->get();
-          $data = array();
-          $i = 0;
-          foreach($employee as $emp)
-          {
+        $employee = EmployeeModel::where('id', $id)->get();
+        $data = array();
+        $i = 0;
+        foreach ($employee as $emp) {
             $data[$i] = $emp;
-            $academy = AcademyModel::where('emp_id',$emp['id'])->get();
+            $academy = AcademyModel::where('emp_id', $emp['id'])->get();
             $data[$i]['Academy'] = $academy;
-            $professional = ProfessionalModel::where('emp_id',$emp['id'])->get();
+            $professional = ProfessionalModel::where('emp_id', $emp['id'])->get();
             $data[$i]['professional'] = $professional;
-            $document = DocumentModel::where('emp_id',$emp['id'])->get();
+            $document = DocumentModel::where('emp_id', $emp['id'])->get();
             $data[$i]['document'] = $document;
-            $project = ProjectModel::where('emp_id',$emp['id'])->get();
+            $project = ProjectModel::where('emp_id', $emp['id'])->get();
             $data[$i]['project'] = $project;
             $i++;
-          }
+        }
         $response = ($data) ? ['status' => 200, 'Message' => 'Employee Detail By Id', 'data' => $data] :
-        ['status' => 404, 'Message' => 'Data Not Found'];
+            ['status' => 404, 'Message' => 'Data Not Found'];
         return response()->json($response, 200);
     }
 
-    public function AllEmployee(Request $req)
+    public function AllEmp(Request $req)
     {
-        // $employee = EmployeeModel::where("user_type",2)->get();
-        // return $employee;
-        // die();
-        // $data = array();
-        // $i = 0;
-        // foreach($employee as $emp){
-        //  $data[$i]['name'] = trim($emp['first_name']) . ' '. trim($emp['last_name']);
-        // $data[$i]['role'] = $emp['skillset'];
-        // $project = ProjectModel::where("emp_id",$emp['id'])->get();
-        // $data[$i]['project'] = $project['project_name'];
-        // $data[$i]['email'] = $emp['official_email'];
-        //  $i++;
-        // }
-        // $response = ($data) ? ['status' => 200, 'Message' => 'All Employees', 'data' => $data] :
-        // ['status' => 404, 'Message' => 'Data Not Found'];
-        // return response()->json($response, 200);
+        $name = $req->input('name');
+        // $users = User::where('name', 'like', "%$name%")->get();
+        $employee = EmployeeModel::where("user_type", 2)->where('first_name', 'like', "%$name%")->get();
+
+        $data = array();
+        $i = 0;
+        foreach ($employee as $emp) {
+            $data[$i]['id'] = $emp['id'];
+            $data[$i]['name'] = trim($emp['first_name']) . ' ' . trim($emp['last_name']);
+            $data[$i]['role'] = $emp['skillset'];
+            $project = ProjectModel::where("emp_id", $emp['id'])->get();
+            if ($project->count() > 0) {
+                $projectName = $project->pluck('project_name')->toArray();
+                $data[$i]['project'] = $projectName;
+            }
+            $data[$i]['email'] = $emp['official_email_id'];
+            $i++;
+        }
+        $response = ($data) ? ['status' => 200, 'Message' => 'All Employees', 'data' => $data] :
+            ['status' => 404, 'Message' => 'Data Not Found'];
+        return response()->json($response, 200);
     }
-}  
+}

@@ -24,12 +24,12 @@ Route::post('/auth/login', [AuthController::class, 'loginUser']);
 
 Route::middleware('auth:sanctum')->group(function () {
     
+    Route::get('/AllEmployee',[EmployeeController::class,'AllEmp']);
     
     //Employee
     Route::prefix('employee')->group(function () {
         Route::put('/update', [EmployeeController::class, 'UpdateEmployee']);
         Route::get('/{id}', [EmployeeController::class, 'GetEmployee']);
-        Route::get('/All', [EmployeeController::class, 'AllEmployee']);
 
         //Employee Academy detail
         Route::post('academy/register', [EmployeeController::class, 'CreateAcademy']);

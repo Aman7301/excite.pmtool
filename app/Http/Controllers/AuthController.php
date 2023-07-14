@@ -23,18 +23,16 @@ class AuthController extends Controller
         
         foreach($employee as $empl){
         $total = TotalLeaveModel::where("id",$empl['total_leave_id'])->first();
-        $leave = $total['total'];
-        $val = $leave / 12 ;
-        $mon = 13 - date('m');
-        $mul = $val * $mon;
+        $leave = $total['total'];  // Total  Num
+        $val = $leave / 12 ;   // For Month Holiday
+        $mon = 13 - date('m');  //  date for multiplication
+        $mul = $val * $mon;   // Total holiday by month
     }
     EmployeeModel::where("id",$data['id'])->update([
-        "emp_leave" => $mul
+        "emp_leave" => $mul,
+        "emp_total_leave" => $mul
     ]);
-       // $num = 18;
-        // $val = $num/12;
-        // echo $val;
-        // die;
+      
         if ($data) {
             $response = ['status' => 200, 'Message' => 'Data Successfully Added'];
         } else {
