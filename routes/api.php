@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\TimeController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,8 +68,14 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::delete('delete/Leave/{id}',[LeaveController::class,'deleteLeave']);
       Route::put('Edit/Leave',[LeaveController::class,'updateLeave']);
 
-      //Total Leave Changes
-    //   Route::post('')
+      //Dashboard Api
+      Route::get('Get/Dashboard/{id}',[DashboardController::class,'GetDasboardData']);
+      Route::get('Get/Calender/Dashboard/{id}',[DashboardController::class,'GetCalenderDasboard']);
+      Route::get('Get/TimeSheet/Dashboard/{id}',[DashboardController::class,'GetTimeSheetDasboard']);
+
+      //Location 
+      Route::post('Add/Location',[DashboardController::class,'AddLocation']);
+      Route::get('Get/Location',[DashboardController::class,'GetLocation']);
 
 });
 
