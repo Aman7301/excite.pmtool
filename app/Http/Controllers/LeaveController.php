@@ -27,6 +27,13 @@ class LeaveController extends Controller
         } else {
             $type = LeaveTypeModel::where("leave_status", 1)->get();
         }
+        $emp = EmployeeModel::where("id",$req->id)->first();
+        foreach($emp as $e){
+        if($emp['emp_leave'] <= 0){
+            $type = LeaveTypeModel::where("id", 4)->get();
+                
+        }
+    }
         return response()->json($type, 200);
     }
 
@@ -34,16 +41,13 @@ class LeaveController extends Controller
     {
         $leave = LeaveModel::where('emp_id', $id)->get();
         $data = array();
-        $i = 0;
         foreach($leave as $l){
-            $data[$i] = $l;
             $emp = EmployeeModel::where("id",$l['emp_id'])->first();
-            $data[$i]['Total_Leave']  =  $emp['emp_total_leave'];
-            $data[$i]['Leave_balance']  =  $emp['emp_leave'];
-            $data[$i]['Leave_Taken']  =  $emp['emp_total_leave'] - $emp['emp_leave'];
-            $i++;
+            $data['Leave_balance']  =  $emp['emp_leave'];
+            $data['Leave_Taken']  =  $emp['emp_total_leave'] - $emp['emp_leave'];
+            $data['Total_Leave']  =  $emp['emp_total_leave'];
         }
-        $response = ($leave) ? ['status' => 200, 'Message' => 'Leave By Emp', 'data' => $leave] :
+        $response = ($leave) ? ['status' => 200, 'Message' => 'Leave By Emp', 'data' => $leave, 'Leave_data' => $data] :
             ['status' => 404, 'Message' => 'Leave Not Found By this Id'];
         return response()->json($response, 200);
     }
