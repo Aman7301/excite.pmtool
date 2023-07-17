@@ -7,8 +7,8 @@ use App\Models\EmployeeModel;
 use App\Models\AcademyModel;
 use App\Models\ProfessionalModel;
 use App\Models\DocumentModel;
-use App\Models\ProjectModel;
-use App\Models\TimeModel;
+use App\Models\AllocateProjectModel;
+// use App\Models\TimeSheetModel;
 
 class EmployeeController extends Controller
 {
@@ -138,7 +138,7 @@ class EmployeeController extends Controller
                 'start_date' => $acad['start_date'],
                 'end_date' => $acad['end_date']
             ];
-            $insert = ProjectModel::insert($data);
+            $insert = AllocateProjectModel::insert($data);
         }
         $response = ($insert) ? ['status' => 200, 'Mesaage' => 'Employee project detail added Successfully'] :
             ['status' => 201, 'Message' => 'Employee project  detail Not added'];
@@ -147,7 +147,7 @@ class EmployeeController extends Controller
 
     public function updateProject(Request $req)
     {
-        $upd = ProjectModel::find($req->id);
+        $upd = AllocateProjectModel::find($req->id);
         $upd->update($req->all());
         $response = ($upd) ? ['status' => 200, 'Mesaage' => 'Employee project updated Successfully'] :
             ['status' => 204, 'Message' => 'Employee project Not Updated'];
@@ -156,7 +156,7 @@ class EmployeeController extends Controller
 
     public function deleteProject($id)
     {
-        $del = ProjectModel::where('id', $id)->delete();
+        $del = AllocateProjectModel::where('id', $id)->delete();
         $response = ($del) ? ['status' => 200, 'Mesaage' => 'Employee project detail deleted Successfully'] :
             ['status' => 204, 'Message' => 'Employee project detail Not deleted'];
         return response()->json($response, 200);
@@ -175,7 +175,7 @@ class EmployeeController extends Controller
             $data[$i]['professional'] = $professional;
             $document = DocumentModel::where('emp_id', $emp['id'])->get();
             $data[$i]['document'] = $document;
-            $project = ProjectModel::where('emp_id', $emp['id'])->get();
+            $project = AllocateProjectModel::where('emp_id', $emp['id'])->get();
             $data[$i]['project'] = $project;
             $i++;
         }
@@ -196,7 +196,7 @@ class EmployeeController extends Controller
             $data[$i]['id'] = $emp['id'];
             $data[$i]['name'] = trim($emp['first_name']) . ' ' . trim($emp['last_name']);
             $data[$i]['role'] = $emp['skillset'];
-            $project = ProjectModel::where("emp_id", $emp['id'])->get();
+            $project = AllocateProjectModel::where("emp_id", $emp['id'])->get();
             if ($project->count() > 0) {
                 $projectName = $project->pluck('project_name')->toArray();
                 $data[$i]['project'] = $projectName;

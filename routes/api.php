@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('Project/update', [EmployeeController::class, 'updateProject']);
     });
 
-    //Time 
+    //TimeSheet
       Route::Post('Time/create',[TimeController::class,'AddTime']);
       Route::Post('Time/History/{id}',[TimeController::class,'GetTimeHistory']);
       Route::get('Time/{id}',[TimeController::class,'GetTimeByEmp']);
@@ -78,6 +78,12 @@ Route::middleware('auth:sanctum')->group(function () {
       //Location 
       Route::post('Add/Location',[DashboardController::class,'AddLocation']);
       Route::get('Get/Location',[DashboardController::class,'GetLocation']);
+
+      //Project
+      Route::post('Add/Project',[TimeController::class,'AddProject']);
+      Route::get('Get/Project',[TimeController::class,'GetProject']);
+      Route::put('Update/Project',[TimeController::class,'UpdateProject']);
+      Route::delete('Delete/Project/{id}',[TimeController::class,'DeleteProject']);
 
 });
 
