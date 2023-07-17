@@ -13,26 +13,33 @@ class AuthController extends Controller
     {
         $emp = $req->all();
         if ($emp['user_type'] == 2) {
+            $req->validate([
+                "number" => 'unique:employee',
+                "emergency_number" => 'unique:employee',
+                "Account_number" => 'unique:employee',
+                "employee_id" => 'unique:employee',
+                "official_email_id" => 'unique:employee',
+            ]);
             $emp['profile_photo'] = $req->profile_photo->store('profile_photo');
             //   $emp['emp_leave'] = 
         }
         $emp['password'] = Hash::make($req->password);
-       
+
         $data = EmployeeModel::create($emp);
-        $employee = EmployeeModel::where("id",$data['id'])->get();
-        
-        foreach($employee as $empl){
-        $total = TotalLeaveModel::where("id",$empl['total_leave_id'])->first();
-        $leave = $total['total'];  // Total  Num
-        $val = $leave / 12 ;   // For Month Holiday
-        $mon = 13 - date('m');  //  date for multiplication
-        $mul = $val * $mon;   // Total holiday by month
-    }
-    EmployeeModel::where("id",$data['id'])->update([
-        "emp_leave" => $mul,
-        "emp_total_leave" => $mul
-    ]);
-      
+        $employee = EmployeeModel::where("id", $data['id'])->get();
+
+        foreach ($employee as $empl) {
+            $total = TotalLeaveModel::where("id", $empl['total_leave_id'])->first();
+            $leave = $total['total']; // Total  Num
+            $val = $leave / 12; // For Month Holiday
+            $mon = 13 - date('m'); //  date for multiplication
+            $mul = $val * $mon; // Total holiday by month
+        }
+        EmployeeModel::where("id", $data['id'])->update([
+            "emp_leave" => $mul,
+            "emp_total_leave" => $mul
+        ]);
+
         if ($data) {
             $response = ['status' => 200, 'Message' => 'Data Successfully Added'];
         } else {

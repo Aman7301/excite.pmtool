@@ -55,7 +55,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Time 
       Route::Post('Time/create',[TimeController::class,'AddTime']);
-      Route::Post('Time/{id}',[TimeController::class,'GetTime']);
+      Route::Post('Time/History/{id}',[TimeController::class,'GetTimeHistory']);
+      Route::get('Time/{id}',[TimeController::class,'GetTimeByEmp']);
+      Route::put('Time/update',[TimeController::class,'updateTime']);
 
       //Holiday 
       Route::post('Add/Holiday',[TimeController::class,'AddHoliday']);

@@ -7,16 +7,19 @@ use App\Models\TimeModel;
 use App\Models\HolidayModel;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class TimeController extends Controller
 {
     public function AddTime(Request $req)
     {
+        $today =Carbon::today()->subDays(10)->format('d/m/Y');
 
         $validator = Validator::make($req->all(), [
-            'time.*.date' => 'required|date|after_or_equal:' . Carbon::today()->subDays(10)->format('d/m/Y'),
+            'time.*.date' => 'required|date_format:d/m/Y|after_or_equal:' . $today,
         ]);
-
+    //   echo date("d/m/Y");
+    //   die;
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
@@ -45,10 +48,11 @@ class TimeController extends Controller
 
     }
 
-    public function GetTime($id, Request $req)
+    public function GetTimeHistory($id, Request $req)
     {
 
-        $time = TimeModel::where('emp_id', $id)->whereMonth('created_at', $req->month)->get();
+        $timeQuery  = TimeModel::where('emp_id', $id)->whereMonth('created_at', $req->month);
+        $time = $timeQuery->paginate(5);
         $m = 0;
         $y = 0;
         //Month
@@ -81,5 +85,43 @@ class TimeController extends Controller
           $response = ($holiday) ? ['status' => 200, 'Message' => 'All Holiday Data', "data" => $holiday] :
           ['status' => 404, 'Message' => 'Data Not Found'];
       return response()->json($response, 200);
+    }
+
+    public function GetTimeByEmp($id)
+    {
+       $time = TimeModel::where('emp_id',$id)->get();
+       $currentWeek = date('W');
+        $weekData = TimeModel::where('emp_id',$id)->whereRaw("WEEK(created_at) = ?", [$currentWeek])->get();
+        $week = $weekData->sum('time');
+       $response = ($time) ? ['status' => 200, 'Message' => 'Time By Employee',"Hours_of_Week" => $week ,"data" => $time] :
+       ['status' => 404, 'Message' => 'Data Not Found'];
+   return response()->json($response, 200);
+    }
+
+    public function updateTime(Request $req)
+    {
+        $upd = TimeModel::find($req->id);
+        if ($upd['time'] != '') {
+            // $req->time;
+            $total = 0;
+            $upd->update($req->all());
+            $records = TimeModel::where("date", $upd['date'])->where("emp_id",$upd['emp_id'])
+            ->get();
+        foreach ($records as $record) {
+            
+            $total += $record->time;
+            $record->total = $total;
+            $record->save();
+        }
+        // $full = $total;
+
+    }else{
+
+        $upd->update($req->all());
+    }
+            
+        $response = ($upd) ? ['status' => 200, 'Message' => 'Time update Successfully'] :
+       ['status' => 204, 'Message' => 'Time Not Updated'];
+   return response()->json($response, 200);
     }
 }
