@@ -5,22 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TimeSheetModel extends Model
+class TaskModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'timesheet';
+    protected $table = 'task';
     protected $primarykey = 'id';
 
     protected $fillable = [
         'id',
-        'emp_id',
-        'date',
-        'project_id',
-        'project_name',
-        'task_id',
-        'task_description',
-        'time',
-        'total'
+        'Task'
     ];
 }

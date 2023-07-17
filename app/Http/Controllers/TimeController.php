@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\TimeSheetModel;
 use App\Models\HolidayModel;
 use App\Models\ProjectModel;
+use App\Models\TaskModel;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,7 @@ class TimeController extends Controller
         $validator = Validator::make($req->all(), [
             'time.*.date' => 'required|date_format:d/m/Y|after_or_equal:' . $today,
         ]);
-        //   echo date("d/m/Y");
-        //   die;
+       
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
@@ -33,8 +33,10 @@ class TimeController extends Controller
             $data = [
                 'emp_id' => $t['emp_id'],
                 'date' => $t['date'],
+                'project_id' => $t['project_id'],
                 'project_name' => $t['project_name'],
-                'project_description' => $t['project_description'],
+                'task_id' => $t['task_id'],
+                'task_description' => $t['task_description'],
                 'time' => $t['time'],
                 'total' => $total
             ];
@@ -156,6 +158,39 @@ class TimeController extends Controller
         $del = ProjectModel::where("id",$id)->delete();
         $response = ($del) ? ['status' => 200, 'Message' => 'Project deleted Successfully'] :
         ['status' => 204, 'Message' => 'Project Not deleted'];
+    return response()->json($response, 200);
+    }
+
+    public function AddTask(Request $req)
+    {
+        $Task = $req->all();
+        $add = TaskModel::create($Task);
+        $response = ($add) ? ['status' => 200, 'Message' => 'Task Add Successfully'] :
+            ['status' => 201, 'Message' => 'Task Not Added'];
+        return response()->json($response, 200);
+    }
+
+    public function GetTask()
+    {
+        $Task = TaskModel::all();
+        $response = ($Task) ? ['status' => 200, 'Message' => 'All Task', 'Task' => $Task] :
+            ['status' => 404, 'Message' => 'Data NOt Found'];
+        return response()->json($response, 200);
+    }
+
+    public function UpdateTask(Request $req)
+    {
+        $Task = TaskModel::find($req->id);
+        $upd = $Task->update($req->all());
+        $response = ($upd) ? ['status' => 200, 'Message' => 'Task Update Successfully'] :
+            ['status' => 204, 'Message' => 'Task Not Updated'];
+        return response()->json($response, 200);
+    }
+
+    public function DeleteTask($id){
+        $del = TaskModel::where("id",$id)->delete();
+        $response = ($del) ? ['status' => 200, 'Message' => 'Task deleted Successfully'] :
+        ['status' => 204, 'Message' => 'Task Not deleted'];
     return response()->json($response, 200);
     }
 }

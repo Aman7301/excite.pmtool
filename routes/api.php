@@ -85,6 +85,12 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::put('Update/Project',[TimeController::class,'UpdateProject']);
       Route::delete('Delete/Project/{id}',[TimeController::class,'DeleteProject']);
 
+      //Task
+      Route::post('Add/Task',[TimeController::class,'AddTask']);
+      Route::get('Get/Task',[TimeController::class,'GetTask']);
+      Route::put('Update/Task',[TimeController::class,'UpdateTask']);
+      Route::delete('Delete/Task/{id}',[TimeController::class,'DeleteTask']);
+
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
