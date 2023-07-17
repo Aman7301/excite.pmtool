@@ -6,7 +6,7 @@ use App\Models\EmployeeModel;
 use App\Models\HolidayModel;
 use Illuminate\Http\Request;
 use App\Models\LeaveModel;
-use App\Models\TimeModel;
+use App\Models\TimeSheetModel;
 use App\Models\LocationModel;
 
 class DashboardController extends Controller
