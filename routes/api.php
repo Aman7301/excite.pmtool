@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\TimeController;
 use App\Http\Controllers\AuthController;
@@ -90,6 +91,13 @@ Route::middleware('auth:sanctum')->group(function () {
       Route::get('Get/Task',[TimeController::class,'GetTask']);
       Route::put('Update/Task',[TimeController::class,'UpdateTask']);
       Route::delete('Delete/Task/{id}',[TimeController::class,'DeleteTask']);
+
+      //Invoice
+      Route::post('Make/Invoice',[InvoiceController::class,'MakeInvoice']);
+      Route::post('Get/Invoice',[InvoiceController::class,'GetInvoice']);
+
+      //Company
+      Route::post('Add/Company',[InvoiceController::class,'AddCompany']);
 
 });
 

@@ -36,6 +36,7 @@ class TimeController extends Controller
                 'project_id' => $t['project_id'],
                 'project_name' => $t['project_name'],
                 'task_id' => $t['task_id'],
+                'task' => $t['task'],
                 'task_description' => $t['task_description'],
                 'time' => $t['time'],
                 'total' => $total
