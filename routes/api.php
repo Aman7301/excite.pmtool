@@ -94,7 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
       //Invoice
       Route::post('Make/Invoice',[InvoiceController::class,'MakeInvoice']);
-      Route::post('Get/Invoice',[InvoiceController::class,'GetInvoice']);
+      Route::get('Get/Invoice/{id}',[InvoiceController::class,'GetInvoice']);
 
       //Company
       Route::post('Add/Company',[InvoiceController::class,'AddCompany']);

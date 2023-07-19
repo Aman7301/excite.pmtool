@@ -7,6 +7,7 @@ use App\Models\CompanyModel;
 use App\Models\ExciteModel;
 use App\Models\CountModel;
 use App\Models\InvoiceModel;
+use App\Models\InvoicePriceModel;
 use Barryvdh\DomPDF\Facade as PDF;
 
 
@@ -16,44 +17,62 @@ class InvoiceController extends Controller
     {
         $excite = ExciteModel::first();
         $owner_name = $req->owner_name;
+
         //Number Count 
         $count = CountModel::first();
         $number = $count->number;
-        $number += 0;
+        $number += 1;
         $count->number = $number;
         $count->update();
 
-        //Invoice
+        //InvoicePrice create
+
         $invoice = $req->input('invoice');
         $invoData = array();
-        $total = 0;
-        foreach($invoice as $invo){
-            $total += $invo['price'];
-         $invoData =[
-            "price" => $invo['price'],
-            "emp_id" => $invo['emp_id'],
-            "total" => $total
-         ];
-        //  $InvoData = InvoiceModel::insert($invoData);
+        $subtotal = 0;
+        foreach ($invoice as $invo) {
+            $subtotal += $invo['price'] * $invo['quantity'];
+            $total = $invo['price'] * $invo['quantity'];
+            $invoData = [
+                "quantity" => $invo['quantity'],
+                "description" => $invo['description'],
+                "price" => $invo['price'],
+                "emp_id" => $invo['emp_id'],
+                "form_no" => $number,
+                "total" => $total,
+                "sub_total" => $subtotal
+            ];
+            $InvoData = InvoicePriceModel::create($invoData);
         }
-    //    $inv = $InvoData->get();
+        //Take InvoicePrice data who created now
+        $inv = InvoicePriceModel::where("form_no", $InvoData['form_no'])->get();
+        $a = 0;
+        foreach ($inv as $i) {
+            $invoice_id[$a++] = $i['id'];
+        }
+        //Invoice create
+        $invoice = $req->all();
+        $invoice['invoice_price_id'] = implode(',', $invoice_id);
+        $invoice_save = InvoiceModel::create($invoice);
         $company = CompanyModel::where("owner_name", $owner_name)->first();
-        $data = array(); 
-       $logo = $excite->company_logo;
+        $data = array();
+        $logo = $excite->company_logo;
+        //data for response
         $data = [
-            'logo' =>  $logo,
-            'excite' =>  $excite->company_name,
-            'form_no' =>  $number,
-            'company_name' =>  $company->company_name,
-            'owner_name' =>  $company->owner_name,
-            'company_address' =>  $company->company_address,
-            'company_detail' =>  $company->company_detail,
-            // 'price' =>  $inv->price,
-            // 'total' =>  $inv->total
+            'logo' => $logo,
+            'excite' => $excite->company_name,
+            'form_no' => $number,
+            'date' => $invoice_save->date,
+            'company_name' => $company->company_name,
+            'owner_name' => $company->owner_name,
+            'company_address' => $company->company_address,
+            'company_detail' => $company->company_detail,
+            'invoice' => $inv
         ];
-        $pdf = \PDF::loadView('pdf', $data);
+        $response = ($data) ? ['status' => 200, 'Message' => "Invoice Price data", "data" => $data] :
+            ['status' => 404, "Message" => "Data Not Found"];
 
-        return $pdf->download('my_pdf.pdf');
+        return response()->json($response, 200);
     }
     public function AddCompany(Request $req)
     {
@@ -65,18 +84,10 @@ class InvoiceController extends Controller
         return response()->json($response, 200);
     }
 
-    public function GetInvoice(Request $req)
+    public function GetInvoice(Request $req, $id)
     {
-        $owner_name = $req->input('owner_name');
-        $data = array();
-        $company = CompanyModel::where('owner_name', 'like', "%$owner_name%")->get();
-        foreach ($company as $com) {
-            $data['id'] = $com['id'];
-            $data['company_name'] = $com['company_name'];
-            $data['company_address'] = $com['company_address'];
-            $data['company_detail'] = $com['company_detail'];
-        }
-        $response = ($data) ? ['status' => 200, 'Message' => 'Comapany BY Owner Name', 'data' => $data] :
+        $company = CompanyModel::where("id", $id)->first();
+        $response = ($company) ? ['status' => 200, 'Message' => 'Comapany by Id', 'data' => $company] :
             ['status' => 404, 'Message' => 'Comapany Data Not Found'];
         return response()->json($response, 200);
     }
