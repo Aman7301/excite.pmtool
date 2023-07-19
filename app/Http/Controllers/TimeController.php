@@ -20,7 +20,7 @@ class TimeController extends Controller
         $validator = Validator::make($req->all(), [
             'time.*.date' => 'required|date_format:d/m/Y|after_or_equal:' . $today,
         ]);
-       
+
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
@@ -55,21 +55,44 @@ class TimeController extends Controller
     public function GetTimeHistory($id, Request $req)
     {
 
-        $timeQuery = TimeSheetModel::where('emp_id', $id)->whereMonth('created_at', $req->month);
+        $timeQuery = TimeSheetModel::where('emp_id', $id)->whereMonth('created_at', $req->month)->whereYear('created_at', $req->year);
         $time = $timeQuery->paginate(5);
         $m = 0;
         $y = 0;
         //Month
-        $month = TimeSheetModel::where('emp_id', $id)->whereMonth("created_at", date('m'))->pluck('time');
+        $month = TimeSheetModel::where('emp_id', $id)->whereYear("created_at", $req->year)->whereMonth("created_at",  $req->month)->pluck('time');
         $m = $month->sum();
         //Year
-        $year = TimeSheetModel::where('emp_id', $id)->whereYear("created_at", date('Y'))->pluck('time');
-        $y = $year->sum();
+        $year = TimeSheetModel::where('emp_id', $id)->whereYear("created_at", $req->year)->pluck('time');
+        $Y = $year->sum();
         //Week
         $currentWeek = date('W');
-        $weekData = TimeSheetModel::whereRaw("WEEK(created_at) = ?", [$currentWeek])->get();
-        $week = $weekData->sum('time');
-        $response = ($time) ? ['status' => 200, 'Message' => 'Time By Employee', 'data' => $time, 'month' => $m, 'Year' => $y, 'week' => $week] :
+        $weekData = TimeSheetModel::whereYear("created_at", $req->year)->whereMonth("created_at",  $req->month)->where('emp_id', $id)->whereRaw("WEEK(created_at) = ?", [$currentWeek])->pluck('time');
+        // return $weekData;
+        $week = $weekData->sum();
+
+        //Extra Support
+        $i = 0;
+        $data = 0;
+        $years = TimeSheetModel::where('emp_id', $id)->whereYear("created_at",$req->year)->where("total", ">", 8)->get();
+        // return $years;
+        foreach ($years as $y) {
+            $total[$i] = $y['total'] - 8;
+            $data += $total[$i];
+            $i++;
+        }
+        //    if(  )
+        //    $support = TimeSheetModel::where("emp_id",$id); 
+
+        $response = ($time) ? [
+            'status' => 200,
+            'Message' => 'Time By Employee',
+            'Year' => $Y,
+            'month' => $m,
+            'week' => $week,
+            'Support_per_year' => $data,
+            'data' => $time
+        ] :
             ['status' => 404, 'Message' => 'Data Not Found'];
         return response()->json($response, 200);
     }
@@ -155,11 +178,12 @@ class TimeController extends Controller
         return response()->json($response, 200);
     }
 
-    public function DeleteProject($id){
-        $del = ProjectModel::where("id",$id)->delete();
+    public function DeleteProject($id)
+    {
+        $del = ProjectModel::where("id", $id)->delete();
         $response = ($del) ? ['status' => 200, 'Message' => 'Project deleted Successfully'] :
-        ['status' => 204, 'Message' => 'Project Not deleted'];
-    return response()->json($response, 200);
+            ['status' => 204, 'Message' => 'Project Not deleted'];
+        return response()->json($response, 200);
     }
 
     public function AddTask(Request $req)
@@ -188,10 +212,11 @@ class TimeController extends Controller
         return response()->json($response, 200);
     }
 
-    public function DeleteTask($id){
-        $del = TaskModel::where("id",$id)->delete();
+    public function DeleteTask($id)
+    {
+        $del = TaskModel::where("id", $id)->delete();
         $response = ($del) ? ['status' => 200, 'Message' => 'Task deleted Successfully'] :
-        ['status' => 204, 'Message' => 'Task Not deleted'];
-    return response()->json($response, 200);
+            ['status' => 204, 'Message' => 'Task Not deleted'];
+        return response()->json($response, 200);
     }
 }

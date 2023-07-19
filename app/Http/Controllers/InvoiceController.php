@@ -16,7 +16,7 @@ class InvoiceController extends Controller
     public function MakeInvoice(Request $req)
     {
         $excite = ExciteModel::first();
-        $owner_name = $req->owner_name;
+        $company_id = $req->company_id;
 
         //Number Count 
         $count = CountModel::first();
@@ -54,7 +54,7 @@ class InvoiceController extends Controller
         $invoice = $req->all();
         $invoice['invoice_price_id'] = implode(',', $invoice_id);
         $invoice_save = InvoiceModel::create($invoice);
-        $company = CompanyModel::where("owner_name", $owner_name)->first();
+        $company = CompanyModel::where("id", $company_id)->first();
         $data = array();
         $logo = $excite->company_logo;
         //data for response
