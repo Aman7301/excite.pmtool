@@ -68,7 +68,6 @@ class TimeController extends Controller
         //Week
         $currentWeek = date('W');
         $weekData = TimeSheetModel::whereYear("created_at", $req->year)->whereMonth("created_at",  $req->month)->where('emp_id', $id)->whereRaw("WEEK(created_at) = ?", [$currentWeek])->pluck('time');
-        // return $weekData;
         $week = $weekData->sum();
 
         //Extra Support
@@ -81,9 +80,7 @@ class TimeController extends Controller
             $data += $total[$i];
             $i++;
         }
-        //    if(  )
-        //    $support = TimeSheetModel::where("emp_id",$id); 
-
+       
         $response = ($time) ? [
             'status' => 200,
             'Message' => 'Time By Employee',
