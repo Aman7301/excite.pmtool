@@ -78,9 +78,9 @@ class LeaveController extends Controller
                 $end_date = DateTime::createFromFormat('d/m/Y', $upd['end_date']);
 
                 $interval = $end_date->diff($start_date);
-                $sub = $interval->days;
+                $sub = $interval->days ;
                $employee->update([
-                'emp_leave' => $employee->emp_leave - $sub
+                'emp_leave' => $employee->emp_leave - $sub - 1
                ]);
             }
         }

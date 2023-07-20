@@ -105,8 +105,13 @@ class TimeController extends Controller
 
     public function getHoliday(Request $req)
     {
-        $holiday = HolidayModel::where('year', $req->year)->get();
-        $response = ($holiday) ? ['status' => 200, 'Message' => 'All Holiday Data', "data" => $holiday] :
+        $Pune = HolidayModel::where(['year' => $req->year, 'location_id' => 1])->get();
+        $USA = HolidayModel::where(['year' => $req->year, 'location_id' => 2])->get();
+
+        $response = ($Pune) ? ['status' => 200, 'Message' => 'All Holiday Data', "data" => [
+            "Pune" => $Pune,
+            "USA" => $USA
+        ]   ] :
             ['status' => 404, 'Message' => 'Data Not Found'];
         return response()->json($response, 200);
     }

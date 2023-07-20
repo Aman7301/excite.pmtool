@@ -14,6 +14,7 @@ class HolidayModel extends Model
 
     protected $fillable = [
         'id',
+        'location_id',
         'location',
         'year',
         'holiday_type',
