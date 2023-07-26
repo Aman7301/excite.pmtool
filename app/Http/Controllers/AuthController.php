@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\EmployeeModel;
 use App\Models\TotalLeaveModel;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Token;
+
 
 class AuthController extends Controller
 {
@@ -98,5 +101,25 @@ class AuthController extends Controller
             }
         }
         return response()->json($response, 200);
+    }
+
+    public function LogoutEmployee($id)
+    {
+        $user = EmployeeModel::find($id);
+
+        if ($user) {
+            // Revoke the user's tokens
+            $user->tokens->each(function (Token $token, $key) {
+                $token->delete();
+            });
+        
+            return [
+                'message' => 'User logged out'
+            ];
+        } else {
+            return [
+                'message' => 'User not found'
+            ];
+        }
     }
 }

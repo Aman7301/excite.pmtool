@@ -20,7 +20,7 @@ class TimeController extends Controller
         $validator = Validator::make($req->all(), [
             'time.*.date' => 'required|date_format:d/m/Y|after_or_equal:' . $today,
         ]);
-
+        
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
