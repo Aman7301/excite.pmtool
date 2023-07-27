@@ -14,6 +14,8 @@ class TaskModel extends Model
 
     protected $fillable = [
         'id',
-        'Task'
+        'Task',
+        'project_id',
+        'project_name'
     ];
 }

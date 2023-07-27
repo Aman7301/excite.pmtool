@@ -53,11 +53,21 @@ class AuthController extends Controller
 
     public function loginUser(Request $request)
     {
-        $request->validate([
-            'email' => 'required',
+        // $request->validate([
+        //     'email' => 'required',
+        //     'password' => 'required',
+        //     'user_type' => 'required'
+        // ]);
+        $validator = validator::make($request->all(),[
+                  'email' => 'required',
             'password' => 'required',
             'user_type' => 'required'
-        ]);
+        ]) ;
+        if($validator->fails()){
+            return response()->json([
+           'validation_err' => $validator->message(),
+            ]);
+        }
 
         if ($request->user_type == 2) {
 
@@ -67,7 +77,7 @@ class AuthController extends Controller
                 if (Hash::check($request->password, $user['password'])) {
 
                     $token = $user->createToken('auth_token')->plainTextToken;
-                    return response()->json([
+                    return response()->json([   
                         'status' => 200,
                         'Message' => 'Successfully Login',
                         'access_token' => $token,

@@ -191,6 +191,9 @@ class TimeController extends Controller
     public function AddTask(Request $req)
     {
         $Task = $req->all();
+        $Task['project_id'] = $req->project_id;
+       $name =  TaskModel::where("project_id",$Task['project_id']);
+        $Task['project_name'] = $name;
         $add = TaskModel::create($Task);
         $response = ($add) ? ['status' => 200, 'Message' => 'Task Add Successfully'] :
             ['status' => 201, 'Message' => 'Task Not Added'];
